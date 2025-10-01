@@ -1,41 +1,27 @@
-import { useState, useEffect, useRef } from 'react';
+// hooks/useScrollAnimation.js
+import { useState, useEffect, useRef } from "react";
 
-export const useScrollAnimation = () => {
+export const useScrollAnimation = (animation = "fade") => {
   const [isVisible, setIsVisible] = useState(false);
-  const elementRef = useRef(null);
+  const ref = useRef(null);
 
   useEffect(() => {
-    // Capture the current ref value in a variable
-    const currentElement = elementRef.current; 
-
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          // Use the variable in the observer
-          if (currentElement) {
-            observer.unobserve(currentElement);
-          }
-        }
-      },
-      {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-      }
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.3 }
     );
 
-    if (currentElement) {
-      observer.observe(currentElement);
-    }
+    if (ref.current) observer.observe(ref.current);
+    return () => ref.current && observer.unobserve(ref.current);
+  }, []);
 
-    // Use the variable in the cleanup function
-    return () => {
-      if (currentElement) {
-        observer.unobserve(currentElement);
-      }
-    };
-  }, []); // Dependencies array is empty, which is correct here
+  // Return custom motion props based on chosen animation
+  const motionProps = {
+    initial: animation === "slide" ? { opacity: 0, x: -50 } : { opacity: 0, y: 50 },
+    animate: isVisible
+      ? { opacity: 1, x: 0, y: 0, transition: { duration: 0.8 } }
+      : { opacity: 0 },
+  };
 
-  return [elementRef, isVisible];
+  return [ref, motionProps];
 };

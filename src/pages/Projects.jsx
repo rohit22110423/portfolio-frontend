@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getProjects } from "../api";
 import ProjectCard from "../components/ProjectCard";
-import ProjectModal from "../components/ProjectModal"; // This will now work correctly
+import ProjectModal from "../components/ProjectModal";
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const Projects = () => {

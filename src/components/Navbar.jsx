@@ -1,47 +1,84 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-// Import icons for the menu
-import { FiMenu, FiX } from 'react-icons/fi';
+import React, { useState, useEffect } from "react";
+import { FiMenu, FiX } from "react-icons/fi";
 
 const Navbar = () => {
-    // State to track whether the mobile menu is open
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("home");
 
-    // Function to toggle the menu state
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  // Scroll spy effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = document.querySelectorAll("section");
+      let currentSection = "home";
+
+      for (let section of sections) {
+        const sectionTop = section.offsetTop - 120; // adjust for navbar height
+        const sectionHeight = section.offsetHeight;
+
+        if (
+          window.scrollY >= sectionTop &&
+          window.scrollY < sectionTop + sectionHeight
+        ) {
+          currentSection = section.id;
+          break; // ✅ stop once correct section is found
+        }
+      }
+
+      setActiveSection(currentSection);
     };
 
-    return (
-        <nav className="navbar">
-            <div className="logo">
-                <Link to="/">RK</Link>
-            </div>
+    window.addEventListener("scroll", handleScroll);
 
-            {/* Mobile Menu Icon */}
-            <div className="mobile-menu-icon" onClick={toggleMenu}>
-                {isMenuOpen ? <FiX /> : <FiMenu />}
-            </div>
+    // Run once on mount
+    handleScroll();
 
-            {/* Navigation Links - add 'active' class when menu is open */}
-            <ul className={isMenuOpen ? "nav-links active" : "nav-links"}>
-                <li onClick={() => setIsMenuOpen(false)}><Link to="/">Home</Link></li>
-                <li onClick={() => setIsMenuOpen(false)}><Link to="/about">About</Link></li>
-                <li onClick={() => setIsMenuOpen(false)}><Link to="/projects">Projects</Link></li>
-                <li onClick={() => setIsMenuOpen(false)}><Link to="/contact">Contact</Link></li>
-                <li>
-                    <a 
-                        href="/rohit-kumar-resume.pdf" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="resume-button"
-                    >
-                        Resume
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    );
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = [
+    { id: "home", label: "Home" },
+    { id: "about", label: "About" },
+    { id: "skills", label: "Skills" },
+    { id: "projects", label: "Projects" },
+    { id: "contact", label: "Contact" },
+  ];
+
+  return (
+    <nav className="navbar">
+      <div className="logo">
+        <a href="#home">RK</a>
+      </div>
+
+      <div className="mobile-menu-icon" onClick={toggleMenu}>
+        {isMenuOpen ? <FiX /> : <FiMenu />}
+      </div>
+
+      <ul className={isMenuOpen ? "nav-links active" : "nav-links"}>
+        {navItems.map((item) => (
+          <li key={item.id} onClick={() => setIsMenuOpen(false)}>
+            <a
+              href={`#${item.id}`}
+              className={activeSection === item.id ? "active" : ""}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+        <li>
+          <a
+            href="Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="resume-button"
+          >
+            Resume
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
 };
 
 export default Navbar;

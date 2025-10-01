@@ -8,18 +8,13 @@ const SocialLinks = () => {
     <div className="social-links">
       <ul>
         <li>
-          <a href="https://github.com/your-username" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/rohit22110423" target="_blank" rel="noopener noreferrer">
             <FiGithub />
           </a>
         </li>
         <li>
-          <a href="https://linkedin.com/in/your-username" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.linkedin.com/in/rohit-kumar-098094223/" target="_blank" rel="noopener noreferrer">
             <FiLinkedin />
-          </a>
-        </li>
-        <li>
-          <a href="https://twitter.com/your-username" target="_blank" rel="noopener noreferrer">
-            <FiTwitter />
           </a>
         </li>
       </ul>
